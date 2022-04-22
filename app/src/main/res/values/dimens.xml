@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="input_textbox_height">50dp</dimen>
+    <dimen name="double_margin">16dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
+    <dimen name="corner_radius">5dp</dimen>
+    <dimen name="icon_padding">10dp</dimen>
+    <dimen name="back_button">50dp</dimen>
+</resources>

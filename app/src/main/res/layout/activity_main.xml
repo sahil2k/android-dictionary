@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dictionary"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/input_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_textbox_height"
+        android:layout_margin="@dimen/double_margin"
+        android:hint="@string/prompt"
+        android:textStyle="bold"
+        android:inputType="text"
+        android:gravity="center_vertical"
+        android:background="@drawable/textbox_bg"
+        android:drawableStart="@drawable/search_icon"
+        android:drawablePadding="@dimen/icon_padding"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_text"
+        android:text="@string/search"
+        android:onClick="findWord"
+        android:layout_margin="@dimen/double_margin"
+        android:background="@color/colorPrimary"
+        />
+
+</RelativeLayout>

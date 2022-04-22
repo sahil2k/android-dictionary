@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Dictionary</string>
+
+    <string name="edit_text_string">search your word</string>
+    <string name="button_text">find</string>
+    <string name="todo">TODO</string>
+    <string name="prompt">Enter your word!</string>
+    <string name="search">Search!</string>
+</resources>
