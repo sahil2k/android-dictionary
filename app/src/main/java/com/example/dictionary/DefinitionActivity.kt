@@ -12,7 +12,11 @@ class DefinitionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_definition)
         var definition:String?=intent.getStringExtra("my definition")
         var defBox:TextView=findViewById(R.id.def_box)
+
         defBox.text=definition
+        if(definition==null){
+            defBox.text="not found"
+        }
 
     }
     fun goBack(view:View){
