@@ -9,6 +9,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dictionary.models.DisctionaryMainModel
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.IOException
@@ -23,48 +27,60 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
     }
 
     fun findWord(view: View) {
         var textbox: TextView = findViewById(R.id.input_text)
         Log.d("mainactivity", "button pressed")
-        var searchUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + textbox.text.toString()
+        val searchUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + textbox.text.toString()
         Log.d("mainactivity", "searchUrl is " + searchUrl)
-        val asynctask = async()
-        asynctask.execute(searchUrl)
+//        val asynctask = async()
+//        asynctask.execute(searchUrl)
 
-    }
-
-    inner class async : AsyncTask<String, Void, DisctionaryMainModel>() {
-        override fun doInBackground(vararg p0: String?): DisctionaryMainModel? {
-            var url: URL? = null
-            url = createUrl(p0[0])
-            var jsonResponse: String? = null
-            jsonResponse = getHttpResponse(url)
-            return extractFeatureFromJson(jsonResponse)
-        }
-
-        override fun onPostExecute(mainModel: DisctionaryMainModel?) {
-            super.onPostExecute(mainModel)
-            if (mainModel == null) {
-                return
+        GlobalScope.launch(Dispatchers.IO) {
+            val httpResponse = getHttpResponse(createUrl(searchUrl))
+            val dictionaryMainModel = extractFeatureFromJson(httpResponse)
+            withContext(Dispatchers.Main){
+                dictionaryMainModel?.meanings?.let {
+                    showDefinition(it[0].definitions?.get(0)?.definition)
+                }
             }
-
-            mainModel.meanings?.let {
-                showDefinition(it[0].definitions?.get(0)?.definition)
-            }
-
-        }
-
-        private fun showDefinition(definition: String?) {
-            val intent = Intent(applicationContext, DefinitionActivity::class.java)
-            intent.putExtra("my definition", definition)
-            startActivity(intent)
-
         }
 
     }
 
+//    inner class async : AsyncTask<String, Void, DisctionaryMainModel>() {
+//        override fun doInBackground(vararg p0: String?): DisctionaryMainModel? {
+//            var url: URL? = null
+//            url = createUrl(p0[0])
+//            var jsonResponse: String? = null
+//            //jsonResponse = getHttpResponse(url)
+//            return extractFeatureFromJson(jsonResponse)
+//        }
+//
+//        override fun onPostExecute(mainModel: DisctionaryMainModel?) {
+//            super.onPostExecute(mainModel)
+//            if (mainModel == null) {
+//                return
+//            }
+//
+//            mainModel.meanings?.let {
+//                showDefinition(it[0].definitions?.get(0)?.definition)
+//            }
+//
+//        }
+//
+//
+//
+//    }
+
+    private fun showDefinition(definition: String?) {
+        val intent = Intent(applicationContext, DefinitionActivity::class.java)
+        intent.putExtra("my definition", definition)
+        startActivity(intent)
+
+    }
 
     fun getHttpResponse(url: URL?): String? {
         var jsonResponse: String = ""
