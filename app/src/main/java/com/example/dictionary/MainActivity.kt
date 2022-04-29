@@ -1,7 +1,6 @@
 package com.example.dictionary
 
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,10 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dictionary.models.DisctionaryMainModel
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.IOException
@@ -24,6 +20,8 @@ import java.net.URL
 import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
+    val coroutine = CoroutineScope(Dispatchers.IO + Job())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,19 +35,31 @@ class MainActivity : AppCompatActivity() {
         Log.d("mainactivity", "searchUrl is " + searchUrl)
 //        val asynctask = async()
 //        asynctask.execute(searchUrl)
-
-        GlobalScope.launch(Dispatchers.IO) {
+        coroutine.launch {
             val httpResponse = getHttpResponse(createUrl(searchUrl))
             val dictionaryMainModel = extractFeatureFromJson(httpResponse)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 dictionaryMainModel?.meanings?.let {
                     showDefinition(it[0].definitions?.get(0)?.definition)
                 }
             }
         }
+//        GlobalScope.launch(Dispatchers.IO) {
+//            val httpResponse = getHttpResponse(createUrl(searchUrl))
+//            val dictionaryMainModel = extractFeatureFromJson(httpResponse)
+//            withContext(Dispatchers.Main){
+//                dictionaryMainModel?.meanings?.let {
+//                    showDefinition(it[0].definitions?.get(0)?.definition)
+//                }
+//            }
+//        }
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutine.cancel()
+    }
 //    inner class async : AsyncTask<String, Void, DisctionaryMainModel>() {
 //        override fun doInBackground(vararg p0: String?): DisctionaryMainModel? {
 //            var url: URL? = null
