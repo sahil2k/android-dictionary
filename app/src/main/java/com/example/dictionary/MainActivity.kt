@@ -20,7 +20,7 @@ import java.net.URL
 import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
-    val coroutine = CoroutineScope(Dispatchers.IO + Job())
+    val mCoroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("mainactivity", "searchUrl is " + searchUrl)
 //        val asynctask = async()
 //        asynctask.execute(searchUrl)
-        coroutine.launch {
+        mCoroutineScope.launch {
             val httpResponse = getHttpResponse(createUrl(searchUrl))
             val dictionaryMainModel = extractFeatureFromJson(httpResponse)
             withContext(Dispatchers.Main) {
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        coroutine.cancel()
+        mCoroutineScope.cancel()
     }
 //    inner class async : AsyncTask<String, Void, DisctionaryMainModel>() {
 //        override fun doInBackground(vararg p0: String?): DisctionaryMainModel? {
